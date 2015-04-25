@@ -5,43 +5,45 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
+import platformer.entity.types.mobs.player.*;
 import platformer.graphics.*;
 
 public class Game implements Runnable {
 
 	Sprite sprite;
 
+	Player player;
+
 	private void init() {
 
 		sprite = new Sprite("assets/picture.png");
 
+		player = new Player(null);
 	}
 
-	private void handleInput() {
-
+	private void handleInput(Input input) {
+		player.handleInput(input);
 	}
 
-	private void update() {
-
+	private void update(double delta) {
+		player.update(delta);
 	}
 
 	private void render() {
-
-		sprite.render(500, 500, 1);
-
+		player.render();
 	}
 
 	private Thread thread;
 
 	private int width = 1280;
 	private int height = 720;
-	private int frequency = 60;
+	private int frequency = 144;
 
 	private boolean running = false;
 	private boolean fullscreen = false;
 
 	public double getTime() {
-		return System.nanoTime() / 1000000000.0;
+		return System.nanoTime() / 100000000.0;
 	}
 
 	@Override
@@ -49,12 +51,17 @@ public class Game implements Runnable {
 
 		glInit();
 
+		Input input = new Input();
+		init();
+
 		double now = getTime();
 
-		init();
 		while (running && !Display.isCloseRequested()) {
-			handleInput();
-			update();
+			double delta = getTime() - now;
+			now = getTime();
+			handleInput(input);
+			input.update();
+			update(delta);
 			render();
 			Display.sync(frequency);
 			Display.update();
@@ -101,14 +108,15 @@ public class Game implements Runnable {
 			}
 
 			Display.create();
-
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			GL11.glMatrixMode(GL11.GL_PROJECTION);
 			GL11.glLoadIdentity();
 			GL11.glOrtho(0, width, 0, height, -1, 1);
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			glLoadIdentity();
 			glEnable(GL_TEXTURE_2D);
-			
+
 		} catch (LWJGLException e) {
 			e.printStackTrace();
 		}

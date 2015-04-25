@@ -10,8 +10,15 @@ public class Sprite {
 		texture = new Texture(path);
 	}
 
-	public void render(int x, int y, double size) {
+	public void render(double x, double y) {
+		render(x, y, 1);
+	}
+
+	public void render(double xpos, double ypos, double size) {
 		texture.bind();
+
+		int x = (int) xpos;
+		int y = (int) ypos;
 
 		int hwidth = texture.width / 2;
 		int hheight = texture.height / 2;
