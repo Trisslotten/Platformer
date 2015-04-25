@@ -7,18 +7,19 @@ import org.lwjgl.opengl.*;
 
 import platformer.entity.types.mobs.player.*;
 import platformer.graphics.*;
+import platformer.level.*;
 
 public class Game implements Runnable {
 
 	Sprite sprite;
-
 	Player player;
 
+	Map map;
+
 	private void init() {
+		map = new Map();
 
-		sprite = new Sprite("assets/picture.png");
-
-		player = new Player(null);
+		player = new Player(map);
 	}
 
 	private void handleInput(Input input) {
@@ -27,10 +28,15 @@ public class Game implements Runnable {
 
 	private void update(double delta) {
 		player.update(delta);
+
 	}
 
 	private void render() {
+
+		map.getArea("0").render(player.xpos() - width / 2, player.ypos() - height / 2);
+
 		player.render();
+
 	}
 
 	private Thread thread;

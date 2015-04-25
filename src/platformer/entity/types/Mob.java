@@ -1,9 +1,9 @@
 package platformer.entity.types;
 
-import platformer.*;
 import platformer.entity.*;
 import platformer.graphics.*;
 import platformer.level.*;
+import platformer.tile.*;
 
 public abstract class Mob extends Entity {
 
@@ -18,7 +18,43 @@ public abstract class Mob extends Entity {
 
 	protected int health, jumpSpd;
 
-	public boolean isOnGround() {
-		return y <= 100;
+	public boolean nextToWall() {
+		for (Tile t : map.currentArea().tiles) {
+			if (left() <= t.right() && right() >= t.left() && bot() <= t.top() && top() >= t.bot() && xspd != 0) {
+				if(xspd>0) {
+					xspd = -2;
+				} else {
+					xspd = 2;
+				}
+				return true;
+			}
+		}
+		return false;
 	}
+
+	public boolean isOnGround() {
+		for (Tile t : map.currentArea().tiles) {
+			if (left() <= t.right() && right() >= t.left() && bot() <= t.top() && top() >= t.bot() && yspd <= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int bot() {
+		return (int) y;
+	}
+
+	public int top() {
+		return (int) y + height;
+	}
+
+	public int left() {
+		return (int) x;
+	}
+
+	public int right() {
+		return (int) x + width;
+	}
+
 }

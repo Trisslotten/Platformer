@@ -1,11 +1,14 @@
 package platformer.entity.types.mobs.player;
 
+import org.lwjgl.opengl.*;
+
 import platformer.*;
 import platformer.entity.types.*;
 import platformer.entity.types.mobs.player.states.jump.*;
 import platformer.entity.types.mobs.player.states.walk.*;
 import platformer.graphics.*;
 import platformer.level.*;
+import platformer.tile.*;
 
 public class Player extends Mob {
 
@@ -16,19 +19,29 @@ public class Player extends Mob {
 	private double topSpeed = 50;
 	private double walkAcc = 10;
 
+	private Area currentArea;
+
 	public Player(Map map) {
 		super(map);
 		health = 99;
 
 		walkState = new IdleWalkState();
 		jumpState = new IdleJumpState();
+		width = 41;
+		height = 64;
 
-		x = 300;
-		y = 300;
+		Point pos = map.playerStart();
+
+		x = pos.x * Tile.size;
+		y = pos.y * Tile.size + 50;
 
 		jumpSpd = 100;
 
 		currentSprite = new Sprite("assets/picture.png");
+	}
+
+	public void render() {
+		currentSprite.render(Display.getWidth() / 2, Display.getHeight() / 2);
 	}
 
 	public void handleInput(Input input) {
@@ -49,7 +62,7 @@ public class Player extends Mob {
 	public void update(double delta) {
 		walkState.update(this, delta);
 		jumpState.update(this, delta);
-
+		
 		if (toJump) {
 			yspd = jumpSpd;
 			toJump = false;
@@ -93,8 +106,14 @@ public class Player extends Mob {
 		yspd -= 50 * delta;
 	}
 
-	public void render() {
-		currentSprite.render(x + height / 2, y);
+	public int ypos() {
+		// TODO Auto-generated method stub
+		return (int) y;
+	}
+
+	public int xpos() {
+		// TODO Auto-generated method stub
+		return (int) x;
 	}
 
 }
