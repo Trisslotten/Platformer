@@ -5,25 +5,19 @@ import java.util.*;
 import platformer.entity.*;
 import platformer.tile.*;
 
-public class Chunk {
+public class Area {
 	
-	private int x;
+	private int x, y;
 	
 	private int width;
 	private int height;
 
 	public ArrayList<Tile> tiles = new ArrayList<Tile>();
 
-	public Chunk() {
+	public Area() {
 		
 	}
 	
 	
-	public boolean inThis(Entity entity) {
-		
-		
-		
-		return false;
-	}
 	
 }

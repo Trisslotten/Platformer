@@ -54,8 +54,6 @@ public class Player extends Mob {
 			yspd = jumpSpd;
 			toJump = false;
 		}
-		System.out.println(y);
-		System.out.println(isOnGround());
 		x += xspd * delta;
 		y += yspd * delta;
 	}
