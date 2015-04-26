@@ -14,10 +14,10 @@ public class IdleWalkState extends PlayerState {
 
 	@Override
 	public PlayerState handleInput(Input input, Player player) {
-		if (input.down(Input.WALK_LEFT) && !player.nextToWall()) {
+		if (input.down(Input.WALK_LEFT)) {
 			return new WalkLeftState();
 		}
-		if (input.down(Input.WALK_RIGHT) && !player.nextToWall()) {
+		if (input.down(Input.WALK_RIGHT)) {
 			return new WalkRightState();
 		}
 

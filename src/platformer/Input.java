@@ -26,6 +26,7 @@ public class Input {
 
 	public static int WALK_LEFT = Keyboard.KEY_LEFT;
 	public static int WALK_RIGHT = Keyboard.KEY_RIGHT;
-	public static int JUMP = Keyboard.KEY_X;
+	public static int JUMP = Keyboard.KEY_UP;
+	public static final int SHOOT = Keyboard.KEY_X;
 
 }

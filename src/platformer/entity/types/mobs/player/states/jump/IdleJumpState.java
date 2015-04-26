@@ -13,7 +13,7 @@ public class IdleJumpState extends PlayerState {
 
 	@Override
 	public PlayerState handleInput(Input input, Player player) {
-		if (input.down(Input.JUMP)) {
+		if (input.down(Input.JUMP) && player.isOnGround()) {
 			return new JumpState();
 		}
 		if (!player.isOnGround()) {
@@ -24,7 +24,6 @@ public class IdleJumpState extends PlayerState {
 
 	@Override
 	public void update(Player player, double delta) {
-		// TODO Auto-generated method stub
 
 	}
 

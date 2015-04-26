@@ -2,40 +2,110 @@ package platformer;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.util.*;
+
 import org.lwjgl.*;
+import org.lwjgl.input.*;
 import org.lwjgl.opengl.*;
 
+import platformer.entity.*;
+import platformer.entity.types.*;
 import platformer.entity.types.mobs.player.*;
 import platformer.graphics.*;
-import platformer.level.*;
+import platformer.level.Map;
 
 public class Game implements Runnable {
 
-	Sprite sprite;
-	Player player;
+	private Sprite[] num;
 
+	private Sprite count;
+
+	boolean dead = false;
+
+	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+
+	Sprite r;
+	Player player;
 	Map map;
 
 	private void init() {
+		r = new Sprite("assets/r.png");
 		map = new Map();
-
 		player = new Player(map);
+		count = new Sprite("assets/count.png");
+		num = new Sprite[10];
+		for (int i = 0; i < num.length; i++) {
+			num[i] = new Sprite("assets/" + i + ".png");
+		}
 	}
 
 	private void handleInput(Input input) {
 		player.handleInput(input);
+		if (map.changedLevel) {
+			System.out.println("asdasd");
+			player = new Player(map);
+			map.acknowledgeLevelChange();
+		}
+		if (input.pressed(Keyboard.KEY_R)) {
+			player = new Player(map);
+			map.currentArea().resetArea();
+			dead = false;
+		}
+
+		if (input.pressed(Input.SHOOT) && player.isMoving() && !dead && player.bullets > 0) {
+			bullets.add(new Bullet(map, player));
+			player.shot();
+		}
+
+		for (Bullet b : bullets) {
+			b.handleInput(input);
+		}
+
+		ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
+		for (Bullet b : bullets) {
+			if (b.remove) {
+				toRemove.add(b);
+			}
+		}
+		for (Bullet b : toRemove) {
+			bullets.remove(b);
+		}
 	}
 
 	private void update(double delta) {
-		player.update(delta);
+
+		for (Bullet b : bullets) {
+			b.update(delta);
+		}
+
+		if (!dead) {
+			player.update(delta);
+			if (player.remove) {
+				dead = true;
+			}
+		}
 
 	}
 
 	private void render() {
 
-		map.getArea("0").render(player.xpos() - width / 2, player.ypos() - height / 2);
+		int xoffset = player.xpos() - width / 2 - 12;
+		int yoffset = player.ypos() - height / 2;
 
+		map.getArea().render(xoffset, yoffset);
+
+		for (Bullet b : bullets) {
+			b.render(xoffset, yoffset);
+		}
 		player.render();
+
+		num[player.bullets % num.length].render(100, 620);
+
+		count.render(150, 605);
+
+		if (dead) {
+			r.render(width / 2, height / 2 + 150);
+		}
 
 	}
 
@@ -62,7 +132,10 @@ public class Game implements Runnable {
 
 		double now = getTime();
 
-		while (running && !Display.isCloseRequested()) {
+		GL11.glClearColor(0, 0, 0, 0.75f);
+
+		while (running && !Display.isCloseRequested() && !input.down(Keyboard.KEY_ESCAPE)) {
+
 			double delta = getTime() - now;
 			now = getTime();
 			handleInput(input);
@@ -131,7 +204,9 @@ public class Game implements Runnable {
 
 	public static void main(String... args) {
 		Game game = new Game();
+
 		game.start();
+		// game.godmode(true);
 	}
 
 }

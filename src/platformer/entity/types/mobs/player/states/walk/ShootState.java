@@ -1,26 +1,28 @@
-package platformer.entity.types.mobs.player.states.jump;
+package platformer.entity.types.mobs.player.states.walk;
 
 import platformer.*;
 import platformer.entity.types.mobs.player.*;
 
-public class JumpState extends PlayerState {
+public class ShootState extends PlayerState {
+	
+	private double timer;
 
 	@Override
 	public void init(Player player) {
-		player.jump();
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public PlayerState handleInput(Input input, Player player) {
-		if (player.isOnGround()) {
-			return new IdleJumpState();
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void update(Player player, double delta) {
-		player.fall(delta);
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -9,15 +9,30 @@ public class Map {
 
 	private ArrayList<Area> areas = new ArrayList<Area>();
 
-	private Point playerPos;
+	public double pickupCounter = 0;
+	public boolean pickedUp = false;
+	
+
+	public int level = 3;
+
+	public boolean changedLevel = false;
 
 	public Area currentArea() {
-		return getArea("0");
+		return getArea();
 	}
 
-	public Area getArea(String name) {
+	public void acknowledgeLevelChange() {
+		changedLevel = false;
+	}
+
+	public void nextLevel() {
+		level++;
+		changedLevel = true;
+	}
+
+	public Area getArea() {
 		for (Area a : areas) {
-			if (a.getName().equals(name)) {
+			if (level == a.getLevel()) {
 				return a;
 			}
 		}
@@ -25,6 +40,7 @@ public class Map {
 	}
 
 	public Map() {
+
 		String map = Filer.stringFromFile("assets/Maps.txt");
 		String[] areas = map.split(";");
 		for (int i = 0; i < areas.length; i++) {
@@ -35,19 +51,16 @@ public class Map {
 			for (int j = 0; j < lines.length; j++) {
 				parse(area, lines, j);
 			}
+			area.setBullets();
 			this.areas.add(area);
 		}
-	}
-
-	public Point playerStart() {
-		return playerPos;
 	}
 
 	private void parse(Area area, String[] lines, int j) {
 		if (lines[j].startsWith("#")) {
 			lines[j] = lines[j].trim();
 			lines[j] = lines[j].substring(1);
-			area.setName(lines[j]);
+			area.setLevel(Integer.parseInt(lines[j]));
 		} else if (lines[j].startsWith(":")) {
 			lines[j] = lines[j].trim();
 			lines[j] = lines[j].substring(1);
@@ -64,14 +77,26 @@ public class Map {
 				case 'S':
 					area.add(Tile.spike(x, y));
 					break;
+				case 'F':
+					area.add(Tile.falseDoor(x, y));
+					break;
+				case 'D':
+					area.add(Tile.door(x, y));
+					break;
+				case 'B':
+					area.add(Tile.bullet(x, y));
+					break;
+				case 'T':
+					area.add(Tile.breakSpike(x, y));
+					break;
 				case 'P':
-					playerPos = new Point(x, y);
+					area.playerStart = new Point(x, y);
 					break;
 				default:
 					break;
 				}
 			}
-			
+
 		}
 	}
 

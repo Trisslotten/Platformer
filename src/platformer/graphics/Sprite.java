@@ -2,6 +2,8 @@ package platformer.graphics;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import org.lwjgl.opengl.*;
+
 public class Sprite {
 
 	Texture texture;
@@ -15,7 +17,6 @@ public class Sprite {
 	}
 
 	public void render(double xpos, double ypos, double size) {
-		texture.bind();
 
 		int x = (int) xpos;
 		int y = (int) ypos;
@@ -23,21 +24,26 @@ public class Sprite {
 		int hwidth = texture.width / 2;
 		int hheight = texture.height / 2;
 
-		glBegin(GL_QUADS);
+		if (x - hwidth <= Display.getWidth() && x + hwidth >= 0 && y - hheight <= Display.getHeight() && y + hheight >= 0) {
+			
+			texture.bind();
 
-		glTexCoord2f(0, 1);
-		glVertex2f(x - hwidth, y - hheight);
+			glBegin(GL_QUADS);
 
-		glTexCoord2f(1, 1);
-		glVertex2f(x + hwidth, y - hheight);
+			glTexCoord2f(0, 1);
+			glVertex2f(x - hwidth, y - hheight);
 
-		glTexCoord2f(1, 0);
-		glVertex2f(x + hwidth, y + hheight);
+			glTexCoord2f(1, 1);
+			glVertex2f(x + hwidth, y - hheight);
 
-		glTexCoord2f(0, 0);
-		glVertex2f(x - hwidth, y + hheight);
+			glTexCoord2f(1, 0);
+			glVertex2f(x + hwidth, y + hheight);
 
-		glEnd();
+			glTexCoord2f(0, 0);
+			glVertex2f(x - hwidth, y + hheight);
+
+			glEnd();
+		}
 	}
 
 }
